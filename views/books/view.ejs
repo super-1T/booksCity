@@ -1,0 +1,53 @@
+<%- include("../partials/layout-start", {title: title}) %>
+<%- include("../partials/menu") %>
+<h1><%= title %></h1>
+
+
+<div class="card">
+    <div class="card-body">
+        <div>
+            <img class="book__item-img" src="../../public/img/<%= books.fileBook %>">
+        </div>
+        <div>
+            <h5 class="card-title"><%= books.title %></h5>
+            <p class="card-text"><%= books.authors %>.</p>
+            <p class="card-desc"> <%=books.description %></p>
+            <form action="/books/delete/<%= books.id %>" method="POST" class="d-inline">
+                <button class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                <a class="btn btn-sm btn-primary" href="/books/update/<%= books.id %>">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--                 <div class="text-right">
+                    <a class="btn btn-sm btn-primary" href="/books/update/<%= books.id %>">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <form action="/books/delete/<%= books.id %>" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div> -->
+
+
+
+<%- include("../partials/layout-end") %>
+
+<style>
+    .card {
+        margin: 0 auto;
+    }
+    .card-body {
+        margin: 0 auto;
+    }
+    .book__item-img {
+        max-height: 200px;
+    }
+</style>

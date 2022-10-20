@@ -1,0 +1,101 @@
+<%- include("../partials/layout-start", {title: title}) %>
+<%- include("../partials/menu") %>
+<h1><%= title %></h1>
+
+<a class="btn btn-sm btn-primary dsd" href="books/create">Добавить запись</a>
+
+<% if(books.length) { %>
+    <div class="container__index">
+        <div class="books">
+            <div class="books__wrapper">
+                <% books.map((el, idx) => { %>
+                    <div class="book__wrapper-item">
+                        <div>
+                            <img class="book__item-img" src="../../public/img/<%= el.fileBook %>">
+                        </div>
+                        <div class="book__item-text">
+                            <div>
+                                <div><h1> <%= el.title %></h1></div>
+                                <div><h3> <%= el.authors %></h3></div>
+                            </div>
+                            <div class="book__item-icons">
+                                <a class="btn btn-sm btn-success" href="/books/<%= el.id %>">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-sm btn-primary" href="/books/update/<%= el.id %>">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <form action="/books/delete/<%= el.id %>" method="POST" class="d-inline">
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+<% }else { %>
+    <h3 class="mt-5">Записей пока нет</h3>
+<% } %>
+
+
+<%- include("../partials/layout-end") %>
+
+<style>
+    .container__index {
+        margin: 0 auto;
+    }
+
+    body {
+        margin: 0 auto;
+    }
+
+    .books__wrapper {
+        display: grid; 
+        grid-template-columns: 1fr 1fr 1fr; 
+        grid-template-rows: auto; 
+        gap: 10px 10px; 
+        grid-template-areas: 
+            ". . ."; 
+    }
+
+    .book__wrapper-item {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        justify-content: space-between;
+        border: 2px solid gray;
+        border-radius: 5px;
+
+        padding: 0 15px;
+    }
+
+    .book__item-img {
+        max-height: 200px;
+        width: 100%
+    }
+
+    .book__item-icons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    h1{
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 16px;
+        font-weight: normal;
+    }
+
+    .book__item-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around
+    }
+</style>

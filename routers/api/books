@@ -1,0 +1,133 @@
+const express = require('express');
+const router = express.Router();
+const { Books } = require('../../models/Books');
+
+const fileMiddleware = require('../../middleware/file')
+
+const stor = {
+    book: []
+}
+const arrayNum = [1, 2, 3, 4];
+arrayNum.map(function (el) {
+    const newbook = new Books(`title ${el}`,
+        `description ${el}`, `authors ${el}`, `favorites ${el},`,
+        `fileCover ${el}`, `fileName ${el}`, `history.jpg`)
+    stor.book.push(newbook)
+})
+
+router.get('/', (req, res) => {
+    const { book } = stor;
+    res.json(book);
+})
+
+router.get('/:id', (req, res) => {
+    const { book } = stor;
+    const { id } = req.params;
+
+    const idx = book.findIndex(el => el.id === id)
+
+    if (idx !== -1) {
+        res.json(book[idx])
+    } else {
+        res.status(404)
+            .json('Not found')
+    }
+})
+
+router.put('/:id', (req, res) => {
+    const { book } = stor;
+    const { id } = req.params;
+    const { title, description, authors, favorites,
+        fileCover, fileName } = req.body
+    const idx = book.findIndex(el => el.id === id)
+
+    if (idx !== -1) {
+        book[idx] = {
+            ...book[idx],
+            title, description,
+            authors, favorites,
+            fileCover, fileName
+        }
+
+        res.json(book[idx])
+    } else {
+        res.status(404)
+            .json('Not found')
+    }
+})
+
+router.post('/', (req, res) => {
+    const { book } = stor;
+    const { title, description, authors, favorites,
+        fileCover, fileName } = req.body
+
+    const newBook = new Books(title, description, authors, favorites,
+        fileCover, fileName)
+    book.push(newBook);
+
+    res.json(201)
+})
+
+router.delete('/:id', (req, res) => {
+    const { book } = stor;
+    const { id } = req.params;
+
+    const idx = book.findIndex(el => el.id === id)
+
+    if (idx !== -1) {
+        book.splice(idx, 1)
+        res.json(true)
+    } else {
+        res.status(404)
+            .json('Not found')
+    }
+})
+
+router.post('/upload-img', fileMiddleware.single('cover-img'), (req, res) => {
+    if (req.file) {
+        const { path } = req.file
+
+        res.json(path)
+    } else {
+        res.json(null);
+    }
+})
+
+router.put('/:id/upload-img', fileMiddleware.single('cover-img'), (req, res) => {
+    if (req.file) {
+    } else {
+        res.json(null)
+    }
+    const { path } = req.file
+    const fileBook = path.replace('public\\img\\', '')
+    const { id } = req.params;
+    const { book } = stor;
+    const idx = book.findIndex(el => el.id === id)
+
+    if (idx !== -1) {
+        book[idx] = {
+            ...book[idx],
+            fileBook
+        }
+        res.json(book[idx])
+    } else {
+        res.status(404)
+            .json('Not found')
+    }
+})
+
+router.get('/:id/download-img', (req, res) => {
+    const { id } = req.params;
+    const { book } = stor;
+    const idx = book.findIndex(el => el.id === id)
+
+    if (idx !== -1) {
+        res.download(__dirname + `/../public/img/${book[idx].fileBook}`, 'cover.png', err => {
+            if (err) {
+                res.status(404).json()
+            }
+        })
+    }
+})
+
+module.exports = router
